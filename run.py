@@ -101,10 +101,14 @@ def seed_database():
     print("   👤 abderrahmen@demo.com /  password123  (Electronics + Gaming)")
 
 
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-        seed_database()
 
+# ── Initialisation de la base de données (locale + production) ───────────────
+# Appelé par `python run.py` ET par gunicorn (`gunicorn run:app`)
+with app.app_context():
+    db.create_all()
+    seed_database()
+
+
+if __name__ == "__main__":
     print("\n🚀 ShopSense is running at http://127.0.0.1:5000\n")
     app.run(debug=True)
