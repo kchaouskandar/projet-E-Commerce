@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Mon Panier — ShopSense{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <h1>🛒 Mon Panier</h1>
+    <p>Vérifiez vos articles et confirmez votre commande.</p>
+  </div>
+
+  {% if items %}
+
+  <!-- Tableau du panier -->
+  <div class="table-container" style="margin-bottom:2rem;">
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Catégorie</th>
+          <th>Prix unitaire</th>
+          <th>Quantité</th>
+          <th>Sous-total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td style="font-weight:600;">{{ item.product.name }}</td>
+          <td><span class="badge badge-cat">{{ item.product.category }}</span></td>
+          <td style="color:var(--text-muted);">€{{ "%.2f" | format(item.product.price) }}</td>
+          <td style="font-weight:700; text-align:center;">× {{ item.qty }}</td>
+          <td style="font-weight:700; color:var(--accent-2);">€{{ "%.2f" | format(item.subtotal) }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('main.cart_remove', product_id=item.product.id) }}">
+              <button type="submit" class="btn btn-sm" style="background:hsla(0,70%,55%,.15); color:#f87171; border:1px solid hsla(0,70%,55%,.3);">
+                🗑️ Retirer
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Résumé et confirmation -->
+  <div class="cart-summary">
+    <div class="cart-summary__total">
+      Total : <span>€{{ "%.2f" | format(total) }}</span>
+    </div>
+
+    <div class="cart-summary__actions">
+      <a href="{{ url_for('main.shop') }}" class="btn btn-outline">
+        ← Continuer mes achats
+      </a>
+
+      <!-- Formulaire de confirmation -->
+      <form method="POST" action="{{ url_for('main.checkout') }}" id="checkout-form">
+        <button type="submit" class="btn btn-primary btn-lg" id="confirm-order-btn">
+          ✅ Confirmer la commande
+        </button>
+      </form>
+    </div>
+  </div>
+
+  {% else %}
+
+  <div class="empty-state">
+    <div class="empty-state__icon">🛒</div>
+    <h3>Votre panier est vide</h3>
+    <p>Ajoutez des produits depuis la boutique pour commencer vos achats.</p>
+    <br />
+    <a href="{{ url_for('main.shop') }}" class="btn btn-primary">
+      🛍️ Aller à la Boutique
+    </a>
+  </div>
+
+  {% endif %}
+
+</div>
+{% endblock %}

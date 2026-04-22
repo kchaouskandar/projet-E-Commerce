@@ -15,9 +15,19 @@
     <a href="{{ url_for('main.index') }}" class="navbar__brand">🛒 ShopSense</a>
     <ul class="navbar__links">
       {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('main.shop') }}"           {% if request.endpoint == 'main.shop'           %}class="active"{% endif %}>Boutique</a></li>
         <li><a href="{{ url_for('main.history') }}"         {% if request.endpoint == 'main.history'         %}class="active"{% endif %}>Historique</a></li>
         <li><a href="{{ url_for('main.dashboard') }}"       {% if request.endpoint == 'main.dashboard'       %}class="active"{% endif %}>Tableau de bord</a></li>
         <li><a href="{{ url_for('main.recommendations') }}" {% if request.endpoint == 'main.recommendations' %}class="active"{% endif %}>Recommandations</a></li>
+        <li>
+          <a href="{{ url_for('main.cart') }}" class="cart-nav-link" {% if request.endpoint == 'main.cart' %}style="color:var(--accent-1);"{% endif %}>
+            🛒
+            {% set cart_count = session.get('cart', {}).values() | sum %}
+            {% if cart_count > 0 %}
+              <span class="cart-badge">{{ cart_count }}</span>
+            {% endif %}
+          </a>
+        </li>
         <li>
           <span class="navbar__user">👤 {{ current_user.name }}</span>
         </li>

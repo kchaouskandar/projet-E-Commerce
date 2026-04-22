@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Boutique — ShopSense{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <div>
+      <h1>🛒 Boutique</h1>
+      <p>Découvrez nos produits et ajoutez-les à votre panier.</p>
+    </div>
+    <a href="{{ url_for('main.cart') }}" class="btn btn-primary" style="position:relative;">
+      🛒 Mon Panier
+      {% set cart_count = session.get('cart', {}).values() | sum %}
+      {% if cart_count > 0 %}
+        <span class="cart-badge">{{ cart_count }}</span>
+      {% endif %}
+    </a>
+  </div>
+
+  <!-- Grille des produits -->
+  {% set emojis = ['🎧','💻','📱','👟','📚','🎮','⌚','👖','📖','🖱️','👟','🕹️'] %}
+  <div class="shop-grid">
+    {% for product in products %}
+    <div class="shop-card" id="product-{{ product.id }}">
+
+      <div class="shop-card__emoji">{{ emojis[(loop.index0) % emojis|length] }}</div>
+
+      <div class="shop-card__info">
+        <div class="shop-card__name">{{ product.name }}</div>
+        <div class="shop-card__desc">{{ product.description }}</div>
+        <span class="badge badge-cat">{{ product.category }}</span>
+      </div>
+
+      <div class="shop-card__footer">
+        <div class="shop-card__price">€{{ "%.2f" | format(product.price) }}</div>
+
+        <form method="POST" action="{{ url_for('main.cart_add', product_id=product.id) }}">
+          {% set in_cart = cart.get(product.id | string, 0) %}
+          <button type="submit" class="btn btn-primary btn-sm shop-card__btn">
+            {% if in_cart > 0 %}
+              ✅ Ajouter encore (×{{ in_cart }})
+            {% else %}
+              + Ajouter au panier
+            {% endif %}
+          </button>
+        </form>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}
