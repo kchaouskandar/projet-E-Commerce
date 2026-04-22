@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}ShopSense — Achetez plus intelligemment{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero__bg"></div>
+
+  <div class="hero__badge">✨ Recommandations Personnalisées par IA</div>
+
+  <h1>
+    Achetez Plus Intelligemment avec<br />
+    <span class="gradient-text">des Insights Personnalisés</span>
+  </h1>
+
+  <p>
+    ShopSense analyse votre comportement d'achat pour vous proposer des produits
+    que vous allez vraiment aimer — basé sur vos préférences et les tendances populaires.
+  </p>
+
+  <div class="hero__cta">
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('main.recommendations') }}" class="btn btn-primary btn-lg">
+        🎯 Mes Recommandations
+      </a>
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline btn-lg">
+        📊 Tableau de Bord
+      </a>
+    {% else %}
+      <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg" id="hero-cta-register">
+        Créer un Compte
+      </a>
+      <a href="{{ url_for('main.login') }}" class="btn btn-outline btn-lg" id="hero-cta-login">
+        Se Connecter
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="hero__features">
+    <div class="feature-card">
+      <div class="feature-card__icon">🛍️</div>
+      <h3>Historique des Achats</h3>
+      <p>Chaque commande est enregistrée et horodatée pour consulter vos dépenses en un clin d'œil.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card__icon">📊</div>
+      <h3>Analyses Intelligentes</h3>
+      <p>Répartition par catégorie, fréquence d'achat et dépenses totales — tout visualisé.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card__icon">🎯</div>
+      <h3>Top 5 Recommandations</h3>
+      <p>Sélection personnalisée basée sur vos préférences, mise à jour à chaque visite.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card__icon">🔒</div>
+      <h3>Comptes Sécurisés</h3>
+      <p>Hachage Bcrypt des mots de passe et authentification par session sécurisée.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

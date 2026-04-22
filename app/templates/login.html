@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Connexion — ShopSense{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-card__logo">
+      <span>🛒 ShopSense</span>
+      <p>Bon retour — connectez-vous pour continuer</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('main.login') }}" id="login-form">
+
+      <div class="form-group">
+        <label for="email">Adresse E-mail</label>
+        <input
+          class="form-control"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="exemple@domaine.com"
+          required
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de Passe</label>
+        <input
+          class="form-control"
+          type="password"
+          id="password"
+          name="password"
+          required
+          autocomplete="current-password"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-check">
+          <input type="checkbox" name="remember" id="remember" />
+          Se souvenir de moi pendant 30 jours
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full" id="login-submit">
+        🔓 Se Connecter
+      </button>
+
+    </form>
+
+    <p class="auth-footer">
+      Pas encore de compte ?
+      <a href="{{ url_for('main.register') }}">Créer un compte gratuitement</a>
+    </p>
+
+    <!-- Comptes de démonstration -->
+    <div style="margin-top:1.5rem; padding:.9rem 1rem; background:var(--bg-secondary);
+                border:1px solid var(--border); border-radius:var(--radius-sm); font-size:.8rem;
+                color:var(--text-muted); line-height:1.8;">
+      <strong style="color:var(--text-primary);">🧪 Comptes de démonstration</strong> — mot de passe : <code>password123</code><br />
+      <code>iskandar@demo.com</code> &nbsp;→ Jeux + Livres<br />
+      <code>yassmine@demo.com</code> &nbsp;→ Mode<br />
+      <code>abderrahmen@demo.com</code> → Électronique + Jeux
+    </div>
+
+  </div>
+</div>
+{% endblock %}

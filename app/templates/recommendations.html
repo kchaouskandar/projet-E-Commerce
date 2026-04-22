@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Mes Recommandations — ShopSense{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <h1>🎯 Recommandations Personnalisées</h1>
+    <p>
+      Top 5 sélectionnés pour <strong>{{ current_user.name }}</strong>
+      basé sur votre historique d'achat et vos préférences.
+    </p>
+  </div>
+
+  {% if recommendations %}
+
+  <!-- ── Chip explicatif ── -->
+  <div style="display:inline-flex; align-items:center; gap:.5rem;
+              background:hsla(259,80%,65%,.1); border:1px solid hsla(259,80%,65%,.25);
+              border-radius:100px; padding:.4rem 1rem; font-size:.8rem;
+              color:var(--accent-1); margin-bottom:2rem;">
+    ✨ Classé par fréquence d'achat → score de popularité → tendances
+  </div>
+
+  <div class="rec-list">
+    {% for item in recommendations %}
+    {% set product = item.product %}
+    {% set emojis = ['🎧','💻','📱','👟','📚','🎮','⌚','🎒','🖥️','📷'] %}
+
+    <div class="rec-card" id="rec-card-{{ loop.index }}">
+
+      <!-- Badge de rang -->
+      <div class="rec-card__rank">{{ loop.index }}</div>
+
+      <!-- Infos produit -->
+      <div>
+        <div class="rec-card__name">
+          {{ emojis[(product.id - 1) % emojis|length] }} {{ product.name }}
+        </div>
+        <div class="rec-card__reason">
+          💡 {{ item.reason }}
+        </div>
+        <div class="rec-card__meta">
+          <span class="badge badge-cat">{{ product.category }}</span>
+          <span style="color:var(--text-muted); font-size:.75rem;">
+            Popularité : {{ product.popularity_score | int }}%
+          </span>
+        </div>
+      </div>
+
+      <!-- Prix -->
+      <div class="rec-card__price">€{{ "%.2f" | format(product.price) }}</div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  <div style="margin-top:2rem; display:flex; gap:1rem; flex-wrap:wrap;">
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline">
+      📊 Retour au Tableau de Bord
+    </a>
+    <a href="{{ url_for('main.history') }}" class="btn btn-ghost">
+      🛍️ Historique des Achats
+    </a>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state__icon">🎯</div>
+    <h3>Pas encore de recommandations</h3>
+    <p>
+      Effectuez quelques achats pour que nous puissions apprendre vos préférences
+      et personnaliser vos recommandations.
+    </p>
+    <br />
+    <a href="{{ url_for('main.history') }}" class="btn btn-primary">
+      🛍️ Historique des Achats
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

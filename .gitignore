@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Flask / SQLite database
+instance/
+*.db
+*.sqlite3
+
+# Environment variables
+.env
+.env.*
+
+# Playwright / screenshots (optional — comment out to include)
+screenshots/
+screenshot_all.py
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log

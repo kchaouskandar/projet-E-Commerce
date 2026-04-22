@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Historique des Achats — ShopSense{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <h1>🛍️ Historique des Achats</h1>
+    <p>Toutes les commandes passées par <strong>{{ current_user.name }}</strong></p>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card__icon">📦</div>
+      <div class="stat-card__value">{{ purchases | length }}</div>
+      <div class="stat-card__label">Total Commandes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon">💰</div>
+      <div class="stat-card__value">€{{ "%.2f" | format(total_spent) }}</div>
+      <div class="stat-card__label">Total Dépensé</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon">🗂️</div>
+      <div class="stat-card__value">
+        {{ purchases | map(attribute='category') | list | unique | list | length }}
+      </div>
+      <div class="stat-card__label">Catégories</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon">📅</div>
+      <div class="stat-card__value">
+        {% if purchases %}
+          {{ purchases[0].date.strftime('%b %Y') }}
+        {% else %}—{% endif %}
+      </div>
+      <div class="stat-card__label">Dernière Commande</div>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  {% if purchases %}
+  <div class="table-container">
+    <table id="purchases-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Produit</th>
+          <th>Catégorie</th>
+          <th>Prix</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in purchases %}
+        <tr>
+          <td style="color:var(--text-muted); font-size:.8rem;">{{ loop.index }}</td>
+          <td style="font-weight:600;">{{ p.product_name }}</td>
+          <td><span class="badge badge-cat">{{ p.category }}</span></td>
+          <td style="font-weight:700; color:var(--accent-2);">€{{ "%.2f" | format(p.price) }}</td>
+          <td style="color:var(--text-muted); font-size:.82rem;">
+            {{ p.date.strftime('%d %b %Y, %H:%M') }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:1.5rem; display:flex; gap:1rem;">
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline btn-sm">
+      📊 Tableau de Bord
+    </a>
+    <a href="{{ url_for('main.recommendations') }}" class="btn btn-primary btn-sm">
+      🎯 Voir les Recommandations
+    </a>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state__icon">🛒</div>
+    <h3>Aucun achat pour le moment</h3>
+    <p>Votre historique de commandes apparaîtra ici une fois que vous aurez effectué un achat.</p>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

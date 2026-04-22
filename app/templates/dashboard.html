@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Tableau de Bord — ShopSense{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <h1>📊 Tableau de Bord Analytique</h1>
+    <p>Sprint 2 — Intelligence d'achat pour <strong>{{ current_user.name }}</strong></p>
+  </div>
+
+  <!-- ── Statistiques résumées ── -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card__icon">📦</div>
+      <div class="stat-card__value">{{ total_orders }}</div>
+      <div class="stat-card__label">Total Commandes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon">💰</div>
+      <div class="stat-card__value">€{{ "%.2f" | format(total_spent) }}</div>
+      <div class="stat-card__label">Total Dépensé</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon">🗂️</div>
+      <div class="stat-card__value">{{ category_data | length }}</div>
+      <div class="stat-card__label">Catégories</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon">🔥</div>
+      <div class="stat-card__value">{{ freq_data | length }}</div>
+      <div class="stat-card__label">Produits Uniques</div>
+    </div>
+  </div>
+
+  <!-- ── Deux colonnes : Catégories + Fréquence ── -->
+  <div class="grid-2" style="margin-bottom:2rem;">
+
+    <!-- Répartition par catégorie -->
+    <div class="analytics-card">
+      <h2 class="section-title">🗂️ Dépenses par Catégorie</h2>
+
+      {% if category_data %}
+        {% set max_spend = category_data[0].total_spent %}
+        {% for item in category_data %}
+          <div class="category-bar">
+            <div class="category-bar__label">
+              <span>{{ item.category }}</span>
+              <span style="color:var(--accent-2); font-weight:700;">
+                €{{ "%.2f" | format(item.total_spent) }}
+                <span style="color:var(--text-muted); font-weight:400;">
+                  ({{ item.count }} commandes)
+                </span>
+              </span>
+            </div>
+            <div class="category-bar__track">
+              <div class="category-bar__fill"
+                   style="width: {{ ((item.total_spent / max_spend) * 100) | int }}%;">
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="color:var(--text-muted); font-size:.9rem;">Aucune donnée disponible.</p>
+      {% endif %}
+    </div>
+
+    <!-- Fréquence d'achat -->
+    <div class="analytics-card">
+      <h2 class="section-title">🔄 Fréquence d'Achat</h2>
+
+      {% if freq_data %}
+        {% set max_freq = freq_data.values() | max %}
+        <div style="display:flex; flex-direction:column; gap:.75rem;">
+          {% for product, count in freq_data.items() %}
+          <div class="category-bar">
+            <div class="category-bar__label">
+              <span style="font-size:.85rem;">{{ product }}</span>
+              <span style="color:var(--accent-1); font-weight:700;">×{{ count }}</span>
+            </div>
+            <div class="category-bar__track">
+              <div class="category-bar__fill"
+                   style="width:{{ ((count / max_freq) * 100) | int }}%; background: linear-gradient(135deg, hsl(199,90%,55%), hsl(259,80%,65%));">
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="color:var(--text-muted); font-size:.9rem;">Aucune donnée disponible.</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- ── Produits populaires ── -->
+  <h2 class="section-title">🔥 Produits les Plus Populaires</h2>
+  <div class="products-grid" style="margin-bottom:2rem;">
+    {% set emojis = ['🎧','💻','📱','👟','📚','🎮','⌚','🎒','🖥️','📷'] %}
+    {% for product in popular %}
+    <div class="product-card">
+      <div class="product-card__emoji">{{ emojis[loop.index0 % emojis|length] }}</div>
+      <div class="product-card__name">{{ product.name }}</div>
+      <div class="product-card__category">{{ product.category }}</div>
+      <div class="product-card__price">€{{ "%.2f" | format(product.price) }}</div>
+      <div class="score-bar">
+        <div class="score-bar__fill" style="width:{{ product.popularity_score | int }}%;"></div>
+      </div>
+      <div style="font-size:.72rem; color:var(--text-muted); margin-top:.3rem;">
+        Popularité : {{ product.popularity_score | int }}%
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+    <a href="{{ url_for('main.recommendations') }}" class="btn btn-primary">
+      🎯 Voir mes Recommandations
+    </a>
+    <a href="{{ url_for('main.history') }}" class="btn btn-outline">
+      🛍️ Historique des Achats
+    </a>
+  </div>
+
+</div>
+{% endblock %}
